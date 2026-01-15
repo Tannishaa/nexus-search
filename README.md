@@ -4,7 +4,7 @@
 ## Overview
 Nexus Search is a scalable search engine architecture designed to crawl, index, and query the web. It decouples the crawling logic from the indexing logic using a message queue, allowing for horizontal scaling.
 
-**Live Demo:** [Insert your Vercel Link Here]
+**Live Demo:** [https://nexus-search-two.vercel.app/]
 
 ## Architecture
 * **Crawler (Producer):** Python script using `requests` & `BeautifulSoup` to traverse web pages (BFS).
