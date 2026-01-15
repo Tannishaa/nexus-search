@@ -1,0 +1,27 @@
+# --- Python Junk ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# --- IDE Settings (VS Code) ---
+.vscode/
+*.swp
+
+# --- Environment Variables (Secrets) ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# --- AWS & Deployment Artifacts ---
+function.zip
+aws-credentials.csv
+
+# --- OS Junk ---
+.DS_Store
+Thumbs.db
