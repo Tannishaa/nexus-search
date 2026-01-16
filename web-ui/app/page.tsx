@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import GraphView from "./components/GraphView"; // <--- NEW IMPORT
 
-// YOUR AWS API URL
 // Load the URL from the environment file
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -12,6 +12,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
+  
+  // State for the 3D Graph Modal
+  const [showGraph, setShowGraph] = useState(false); // <--- NEW STATE
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +24,7 @@ export default function Home() {
     setSearched(true);
     setError("");
     setResults([]);
+    setShowGraph(false); // Reset graph view on new search
 
     try {
       const res = await fetch(`${API_URL}?q=${query}`);
@@ -93,46 +97,66 @@ export default function Home() {
               </div>
             ) : (
               <div className="border-t border-zinc-900 pt-6">
-                <div className="text-xs text-zinc-600 mb-6 font-mono">
-                  QUERY_TIME: {(Math.random() * 0.2).toFixed(3)}s • HITS: {results.length}
+                
+                {/* --- NEW: Stats Bar + Visualize Button --- */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="text-xs text-zinc-600 font-mono">
+                    QUERY_TIME: {(Math.random() * 0.2).toFixed(3)}s • HITS: {results.length}
+                  </div>
+                  
+                  <button 
+                    onClick={() => setShowGraph(true)}
+                    className="flex items-center gap-2 text-xs font-mono text-cyan-500 hover:text-cyan-400 bg-cyan-950/30 hover:bg-cyan-900/50 px-3 py-1.5 rounded border border-cyan-900/50 transition-all group"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3 group-hover:animate-spin"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    VISUALIZE_NODES
+                  </button>
                 </div>
                 
+                {/* Results Loop */}
                 {results.map((item, index) => (
-  <div key={index} className="group mb-6">
-    <div className="flex items-center justify-between mb-1">
-      {/* URL Breadcrumb */}
-      <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase tracking-wider">
-        <span>HTTP</span>
-        <span className="text-zinc-700">/</span>
-        <span className="truncate max-w-[300px]">{item.url}</span>
-      </div>
+                  <div key={index} className="group mb-6">
+                    <div className="flex items-center justify-between mb-1">
+                      {/* URL Breadcrumb */}
+                      <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase tracking-wider">
+                        <span>HTTP</span>
+                        <span className="text-zinc-700">/</span>
+                        <span className="truncate max-w-[300px]">{item.url}</span>
+                      </div>
 
-      {/* NEW: Relevance Score Badge */}
-      <div className="flex items-center gap-1">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-        <span className="text-[10px] font-mono text-emerald-500">
-          TF-SCORE: {item.score || 1}
-        </span>
-      </div>
-    </div>
-    
-    <a 
-      href={item.url} 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      className="text-blue-400 hover:text-blue-300 hover:underline text-lg font-medium leading-tight block mb-1"
-    >
-      {item.title ? item.title.replace(/\n/g, "").trim() : "Untitled Resource"}
-    </a>
-    
-    <p className="text-sm text-zinc-400 leading-relaxed">
-      Contains indexed keyword <span className="text-white font-mono bg-zinc-800 px-1 text-xs">"{item.keyword}"</span>.
-    </p>
-  </div>
-))}
+                      {/* Relevance Score Badge */}
+                      <div className="flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                        <span className="text-[10px] font-mono text-emerald-500">
+                          TF-SCORE: {item.score || 1}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-400 hover:text-blue-300 hover:underline text-lg font-medium leading-tight block mb-1"
+                    >
+                      {item.title ? item.title.replace(/\n/g, "").trim() : "Untitled Resource"}
+                    </a>
+                    
+                    <p className="text-sm text-zinc-400 leading-relaxed">
+                      Contains indexed keyword <span className="text-white font-mono bg-zinc-800 px-1 text-xs">"{item.keyword}"</span>.
+                    </p>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}
+
+        {/* --- NEW: 3D Graph Modal --- */}
+        {showGraph && (
+          <GraphView query={query} results={results} onClose={() => setShowGraph(false)} />
+        )}
+
       </div>
     </main>
   );
