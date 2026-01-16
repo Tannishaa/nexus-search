@@ -98,28 +98,38 @@ export default function Home() {
                 </div>
                 
                 {results.map((item, index) => (
-                  <div key={index} className="group mb-6">
-                    <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono mb-1 uppercase tracking-wider">
-                      <span>HTTP</span>
-                      <span className="text-zinc-700">/</span>
-                      <span className="truncate max-w-[300px]">{item.url}</span>
-                    </div>
-                    
-                    <a 
-                      href={item.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-400 hover:text-blue-300 hover:underline text-lg font-medium leading-tight block mb-1"
-                    >
-                      {item.title ? item.title.replace(/\n/g, "").trim() : "Untitled Resource"}
-                    </a>
-                    
-                    <p className="text-sm text-zinc-400 leading-relaxed">
-                      Contains indexed keyword <span className="text-white font-mono bg-zinc-800 px-1 text-xs">"{item.keyword}"</span>.
-                    </p>
-                  </div>
-                ))}
-              </div>
+  <div key={index} className="group mb-6">
+    <div className="flex items-center justify-between mb-1">
+      {/* URL Breadcrumb */}
+      <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase tracking-wider">
+        <span>HTTP</span>
+        <span className="text-zinc-700">/</span>
+        <span className="truncate max-w-[300px]">{item.url}</span>
+      </div>
+
+      {/* NEW: Relevance Score Badge */}
+      <div className="flex items-center gap-1">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+        <span className="text-[10px] font-mono text-emerald-500">
+          TF-SCORE: {item.score || 1}
+        </span>
+      </div>
+    </div>
+    
+    <a 
+      href={item.url} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="text-blue-400 hover:text-blue-300 hover:underline text-lg font-medium leading-tight block mb-1"
+    >
+      {item.title ? item.title.replace(/\n/g, "").trim() : "Untitled Resource"}
+    </a>
+    
+    <p className="text-sm text-zinc-400 leading-relaxed">
+      Contains indexed keyword <span className="text-white font-mono bg-zinc-800 px-1 text-xs">"{item.keyword}"</span>.
+    </p>
+  </div>
+))}
             )}
           </div>
         )}
